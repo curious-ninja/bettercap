@@ -15,14 +15,14 @@ type AccessPoint struct {
 	aliases         *data.UnsortedKV
 	clients         map[string]*Station
 	withKeyMaterial bool
-	shakeFile       string
+	Shakefile       string
 }
 
 type apJSON struct {
 	*Station
 	Clients   []*Station `json:"clients"`
 	Handshake bool       `json:"handshake"`
-	shakeFile string     `json:"shakefile"`
+	Shakefile string     `json:"shakefile"`
 }
 
 func NewAccessPoint(essid, bssid string, frequency int, rssi int8, aliases *data.UnsortedKV) *AccessPoint {
@@ -41,7 +41,7 @@ func (ap *AccessPoint) MarshalJSON() ([]byte, error) {
 		Station:   ap.Station,
 		Clients:   make([]*Station, 0, len(ap.clients)),
 		Handshake: ap.withKeyMaterial,
-		shakeFile: ap.shakeFile,
+		Shakefile: ap.Shakefile,
 	}
 
 	for _, c := range ap.clients {
@@ -175,5 +175,5 @@ func (ap *AccessPoint) ShakeFile(filename string) {
 	ap.Lock()
 	defer ap.Unlock()
 
-	ap.shakeFile = filename
+	ap.Shakefile = filename
 }

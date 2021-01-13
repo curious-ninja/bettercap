@@ -46,6 +46,7 @@ type WiFiModule struct {
 	skipBroken          bool
 	pktSourceChan       chan gopacket.Packet
 	pktSourceChanClosed bool
+	targetList          []net.HardwareAddr
 	deauthSkip          []net.HardwareAddr
 	deauthSilent        bool
 	deauthOpen          bool
@@ -79,6 +80,7 @@ func NewWiFiModule(s *session.Session) *WiFiModule {
 		ap:              nil,
 		skipBroken:      true,
 		apRunning:       false,
+		targetList:      []net.HardwareAddr{},
 		deauthSkip:      []net.HardwareAddr{},
 		deauthSilent:    false,
 		deauthOpen:      false,
@@ -133,6 +135,11 @@ func NewWiFiModule(s *session.Session) *WiFiModule {
 			}
 			return fmt.Errorf("Could not find station with BSSID %s", args[0])
 		}))
+
+	mod.AddParam(session.NewStringParameter("wifi.recon.targets",
+		"",
+		"",
+		"Comma separated list of BSSID to focus on while sending deauth and association packets. To be used with a wifi-targeting caplet."))
 
 	mod.AddHandler(session.NewModuleHandler("wifi.recon clear", "",
 		"Remove the 802.11 base station filter.",
